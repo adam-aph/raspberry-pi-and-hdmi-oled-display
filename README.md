@@ -30,7 +30,7 @@ The system is designed to be:
 ---
 
 ## Repository Structure
-
+```
 media/
 ├── oled-1424x280-1.jpg # Retail photo of OLED display
 ├── oled-1424x280-2.mp4 # Initial functional tests
@@ -45,7 +45,7 @@ raspi/
 ├── rpi5-cmdline.txt # Kernel boot parameters
 ├── rpi5-config.txt # Raspberry Pi firmware configuration
 └── rpi5-os-setup.txt # OS-level and compositor configuration
-
+```
 ---
 
 ## Hardware Assembly (Photos & Video)
