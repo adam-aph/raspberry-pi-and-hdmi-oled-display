@@ -1,0 +1,241 @@
+# ---------------------------
+
+System Component
+
+Move the executable:
+
+sudo mv ~/Downloads/ydotoold-release-ubuntu-latest /usr/local/sbin/ydotoold
+sudo chown root:root /usr/local/sbin/ydotoold
+sudo chmod 750 /usr/local/sbin/ydotoold
+
+Install the service:
+
+# File: /etc/systemd/system/ydotool@.service
+
+[Unit]
+Description=Service to run yDoTool service
+
+[Service]
+Type=simple
+
+ExecStartPre=/bin/sleep 30
+ExecStart=/usr/local/sbin/ydotoold --socket-path="/run/user/%i/.ydotool_socket" --socket-own="%i:0"
+ExecReload=/usr/bin/kill -HUP $MAINPID
+
+KillMode=process
+Restart=always
+RestartSec=10
+TimeoutSec=180
+
+[Install]
+WantedBy=default.target
+
+Enable & start it:
+
+
+sudo systemctl daemon-reload
+
+sudo systemctl enable ydotool@${UID}.service
+sudo systemctl start ydotool@${UID}.service
+
+systemctl status ydotool@${UID}.service
+
+sudo mv ~/Downloads/ydotool-release-ubuntu-latest /usr/local/bin/ydotool
+sudo chown root:root /usr/local/bin/ydotool
+sudo chmod 755 /usr/local/bin/ydotool
+
+Test it:
+
+ydotool --help
+
+ydotool mousemove -x -100 -y 110
+
+If it does not yet work - you might need to configure the path to the socket:
+
+
+# this socket should exist! else you have a problem with your service
+ls -l /run/user/${UID}/.ydotool_socket
+
+echo 'export YDOTOOL_SOCKET="/run/user/${UID}/.ydotool_socket"' >> "$HOME/.profile"
+
+# then open a new terminal and re-test it
+
+# ----panel -------------------------
+
+# ~/.config/wayfire.ini  (append or merge into existing file)
+[output]
+# default headless size used by NOOP outputs (pick any sensible fallback)
+headless_width = 1280
+headless_height = 720
+
+# explicit named virtual output we will use for the panel when needed
+[output:NOOP-1]
+mode = 1280x720@60
+position = 0,0
+transform = normal
+
+# Force HDMI-A-1 to primary position
+[output:HDMI-A-1]
+position = 0,0
+
+# Force HDMI-A-2 to a far non-adjacent position to prevent mouse traversal
+[output:HDMI-A-2]
+position = 2000,0
+
+# ~/.config/wf-panel-pi.ini remains the same
+[panel]
+# force the panel onto the persistent headless output
+output = HDMI-A-2
+# ...other panel options...
+
+# ~/.config/systemd/user/wf-panel.service
+[Unit]
+Description=wf-panel-pi (user panel)
+After=graphical-session.target
+
+[Service]
+Type=simple
+ExecStartPre=/usr/bin/pkill -x lxpanel || true
+ExecStartPre=/usr/bin/pkill -x wf-panel-pi || true
+ExecStart=/usr/bin/wf-panel-pi
+Restart=on-failure
+RestartSec=0.5
+
+[Install]
+WantedBy=default.target
+
+# do not start it, it will be started by hdmi-panel-guard.sh
+systemctl --user daemon-reload
+## systemctl --user enable --now wf-panel.service
+grep -R "lxpanel\|wf-panel-pi" ~/.config -n || true
+
+# /etc/wayfire/defaults.ini
+# comment out autostart0:
+# autostart0 = wfrespawn wf-panel-pi
+
+## ~/bin/hdmi-panel-guard.sh (simplified version)
+#!/usr/bin/env bash
+set -euo pipefail
+
+# ---- user-tweakable vars ----
+PANEL_SERVICE="wf-panel.service"           # systemd --user service name
+PRIMARY_OUTPUT="HDMI-A-1"
+SECONDARY_OUTPUT="HDMI-A-2"
+STABILITY_PAUSE=3.0                        # Increased delay for hotplug stability
+POLL_INTERVAL=1                            # seconds between checks
+# -----------------------------
+
+log() { printf '%s %s\n' "$(date +'%F %T')" "$*"; }
+
+secondary_ready() {
+  # Check if output is enabled AND has a current mode set (ensures stability post-hotplug)
+  if command -v wlr-randr >/dev/null 2>&1; then
+    output_info=$(wlr-randr 2>/dev/null | awk -v OUT="$SECONDARY_OUTPUT" '
+      $1 == OUT { in=1 }
+      in && /Enabled:/ { enabled=$2 }
+      in && /current/ { if (enabled == "yes") { print "yes"; exit } }
+      in && /^[^ ]/ { in=0 }  # Exit section on next output
+    ')
+    if [ "$output_info" = "yes" ]; then
+      return 0
+    fi
+  fi
+  return 1
+}
+
+configure_outputs() {
+  log "Configuring outputs"
+  # Apply HDMI-A-2 settings (dynamic mode, no hardcode)
+  wlr-randr --output "$SECONDARY_OUTPUT" --off
+  sleep 0.5
+  wlr-randr --output "$SECONDARY_OUTPUT" --on --pos 2000,0 --transform normal
+
+  # Reapply HDMI-A-1 settings (off/on to reset/force apply)
+  wlr-randr --output "$PRIMARY_OUTPUT" --off
+  sleep 0.5
+  wlr-randr --output "$PRIMARY_OUTPUT" --on --pos 0,0 --transform 90
+}
+
+move_focus_to_secondary() {
+  log "Moving mouse to HDMI-A-2 (assuming position 2000,0 and res > 200x200)"
+  export YDOTOOL_SOCKET=/tmp/.ydotool_socket
+  sudo ydotool mousemove --absolute -x 2100 -y 100
+}
+
+stop_panel_service() {
+  if systemctl --user is-active --quiet "$PANEL_SERVICE"; then
+    log "Stopping $PANEL_SERVICE"
+    systemctl --user stop "$PANEL_SERVICE" || true
+  else
+    log "$PANEL_SERVICE not active"
+  fi
+  pkill -x lxpanel || true
+  pkill -x wf-panel-pi || true
+  pkill -x xfce4-panel || true
+}
+
+restart_panel_service() {
+  if systemctl --user is-active --quiet "$PANEL_SERVICE"; then
+    log "Restarting $PANEL_SERVICE"
+    systemctl --user restart "$PANEL_SERVICE" || true
+  else
+    log "Starting $PANEL_SERVICE"
+    systemctl --user start "$PANEL_SERVICE" || true
+  fi
+}
+
+# Poll loop
+prev=""
+while true; do
+  if secondary_ready; then s="ready"; else s="not_ready"; fi
+  if [ "$s" != "$prev" ]; then
+    configure_outputs
+    sleep "$STABILITY_PAUSE"
+    move_focus_to_secondary
+    if [ "$s" = "ready" ]; then
+      log "poll: HDMI-A-2 ready -> configure outputs, start panel service, move focus"
+      restart_panel_service
+    else
+      log "poll: HDMI-A-2 not ready -> stop panel service"
+      stop_panel_service
+    fi
+    prev="$s"
+  fi
+  sleep "$POLL_INTERVAL"
+done
+
+# ~/.config/systemd/user/hdmi-panel-guard.service remains the same:
+[Unit]
+Description=Watch HDMI-A-1 and keep wf-panel on primary (NOOP-1 when absent)
+After=graphical-session.target
+
+[Service]
+Type=simple
+ExecStart=%h/bin/hdmi-panel-guard.sh
+Restart=on-failure
+RestartSec=1
+
+[Install]
+WantedBy=default.target
+
+# start the service (same):
+systemctl --user daemon-reload
+systemctl --user enable --now hdmi-panel-guard.service
+
+# ~/.config/systemd/user/lcd-screen.service:
+[Unit]
+Description=LCD Sreen Service
+After=hdmi-panel-guard.service
+
+[Service]
+Type=simple
+ExecStart=%h/bin/oled-screen.py
+Restart=on-failure
+RestartSec=1
+
+[Install]
+WantedBy=default.target
+
+systemctl --user daemon-reload
+systemctl --user enable --now lcd-screen.service
+

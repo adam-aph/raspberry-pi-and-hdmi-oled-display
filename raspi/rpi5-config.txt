@@ -1,0 +1,78 @@
+# For more options and information see
+# http://rptl.io/configtxt
+# Some settings may impact device functionality. See link above for details
+
+# Uncomment some or all of these to enable the optional hardware interfaces
+#dtparam=i2c_arm=on
+#dtparam=i2s=on
+#dtparam=spi=on
+
+# Enable audio (loads snd_bcm2835)
+dtparam=audio=on
+
+# Additional overlays and parameters are documented
+# /boot/firmware/overlays/README
+
+# Automatically load overlays for detected cameras
+camera_auto_detect=1
+
+# Automatically load overlays for detected DSI displays
+display_auto_detect=1
+
+# Automatically load initramfs files, if found
+auto_initramfs=1
+
+# Enable DRM VC4 V3D driver
+dtoverlay=vc4-kms-v3d
+max_framebuffers=2
+
+# Don't have the firmware create an initial video= setting in cmdline.txt.
+# Use the kernel's default instead.
+disable_fw_kms_setup=1
+
+# Run in 64-bit mode
+arm_64bit=1
+
+# Disable compensation for displays with overscan
+disable_overscan=1
+
+# Run as fast as firmware / board allows
+arm_boost=1
+
+[cm4]
+# Enable host mode on the 2711 built-in XHCI USB controller.
+# This line should be removed if the legacy DWC2 controller is required
+# (e.g. for USB device mode) or if USB support is not required.
+otg_mode=1
+
+[cm5]
+dtoverlay=dwc2,dr_mode=host
+
+[all]
+dtoverlay=disable-wifi
+dtparam=spi=on
+
+# Force detection of HDMI monitors on both ports
+hdmi_force_hotplug:0=1
+hdmi_force_hotplug:1=1
+
+# Use HDMI (not DVI) mode for both
+hdmi_drive:0=2
+hdmi_drive:1=2
+
+# HDMI0 (primary): custom mode 1424x600 at 60 Hz
+hdmi_group:0=2         # DMT (computer monitor timings)
+hdmi_mode:0=87         # 87 = CVT custom
+hdmi_cvt:0=1424 600 60 3 0 0 0
+#             ^^^^ ^^^ ^  ^ ^ ^ ^
+#             W    H  Hz AR M R I
+# AR=3 means 15:9 (closest to your aspect, wide)
+# M=0 reduced blanking off, R=0 rotation, I=0 progressive
+
+# HDMI1 (secondary): auto-pick the display’s maximum supported resolution
+hdmi_group:1=1
+hdmi_mode:1=16
+
+# Use the kernel KMS driver (recommended for direct DRM usage)
+dtoverlay=vc4-kms-v3d
+max_framebuffers=2
