@@ -126,9 +126,7 @@ All services auto-start after login and recover automatically after crashes or H
 
 ## Result
 
-The final system behaves as a **dedicated embedded information display**, independent of the main desktop, resistant to HDMI state changes, and visually optimized for ultra-wide OLED panels.
-
-This approach avoids SPI/I²C OLED limitations while retaining full GPU acceleration and Wayland stability on Raspberry Pi 5.
+The final system behaves as a **dedicated embedded information display**, independent of the main desktop, resistant to HDMI state changes, and visually optimized for ultra-wide OLED panels. This approach avoids SPI/I²C OLED limitations while retaining full GPU acceleration and Wayland stability on Raspberry Pi 5.
 
 ---
 
