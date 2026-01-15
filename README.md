@@ -52,8 +52,8 @@ raspi/
 
 | Step | Preview |
 |----|----|
-| OLED display | ![](media/oled-1424x280-1.jpg) |
-| Initial tests | ![](media/oled-1424x280-2.jpg) |
+| OLED display | ![](<img src="[https://i.imgur.com/ZWnhY9T.png](https://github.com/adam-aph/raspberry-pi-and-hdmi-oled-display/blob/main/media/oled-1424x280-1.jpg)" width=100% height=100%>) |
+| Initial tests | ![](<img src="[https://i.imgur.com/ZWnhY9T.png](https://github.com/adam-aph/raspberry-pi-and-hdmi-oled-display/blob/main/media/oled-1424x280-2.jpg)" width=50% height=50%>) |
 | Initial tests video | ![](media/oled-1424x280-2.mp4) |
 | Raspberry Pi assembly | ![](media/oled-20250929-0001.jpg) |
 | Internal mounting | ![](media/oled-20250929-0002.jpg) |
