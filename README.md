@@ -50,22 +50,39 @@ raspi/
 
 ## Hardware Assembly (Photos & Video)
 ### OLED display
-<img src="https://github.com/adam-aph/raspberry-pi-and-hdmi-oled-display/blob/main/media/oled-1424x280-1.jpg" width=100% height=100%>
+
+<img src="https://github.com/adam-aph/raspberry-pi-and-hdmi-oled-display/blob/main/media/oled-1424x280-1.jpg" width=50% height=50%>
+
 ### Initial tests
+
 <img src="https://github.com/adam-aph/raspberry-pi-and-hdmi-oled-display/blob/main/media/oled-1424x280-2.jpg" width=50% height=50%>
+
 ### Initial tests video
+
 media/oled-1424x280-2.mp4
+
 ### Raspberry Pi assembly
+
 <img src="https://github.com/adam-aph/raspberry-pi-and-hdmi-oled-display/blob/main/media/oled-20250929-0001.jpg" width=50% height=50%>
+
 ### Internal mounting
+
 <img src="https://github.com/adam-aph/raspberry-pi-and-hdmi-oled-display/blob/main/media/oled-20250929-0002.jpg" width=50% height=50%>
+
 ### Stand integration
+
 <img src="https://github.com/adam-aph/raspberry-pi-and-hdmi-oled-display/blob/main/media/oled-20250929-0003.jpg" width=50% height=50%>
+
 ### Final internals
+
 <img src="https://github.com/adam-aph/raspberry-pi-and-hdmi-oled-display/blob/main/media/oled-20250929-0004.jpg" width=50% height=50%>
+
 ### Final result
+
 <img src="https://github.com/adam-aph/raspberry-pi-and-hdmi-oled-display/blob/main/media/oled-20250929-0005.jpg" width=50% height=50%>
+
 ### Final result video
+
 media/oled-20250929-0005.mp4
 
 ---
