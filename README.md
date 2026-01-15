@@ -59,7 +59,7 @@ raspi/
 
 ### Initial tests video
 
-media/oled-1424x280-2.mp4
+[media/oled-1424x280-2.mp4](media/oled-1424x280-2.mp4)
 
 ### Raspberry Pi assembly
 
@@ -83,7 +83,7 @@ media/oled-1424x280-2.mp4
 
 ### Final result video
 
-media/oled-20250929-0005.mp4
+[media/oled-20250929-0005.mp4](media/oled-20250929-0005.mp4)
 
 ---
 
