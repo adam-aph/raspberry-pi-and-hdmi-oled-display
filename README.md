@@ -33,12 +33,14 @@ The system is designed to be:
 ```
 media/
 ├── oled-1424x280-1.jpg # Retail photo of OLED display
-├── oled-1424x280-2.mp4 # Initial functional tests
+├── oled-1424x280-2.jpg # Initial functional tests
+├── oled-1424x280-2.mp4 # Initial functional tests - video
 ├── oled-20250929-0001.jpg # Raspberry Pi assembly
 ├── oled-20250929-0002.jpg # Internal display mounting
 ├── oled-20250929-0003.jpg # Stand assembly process
 ├── oled-20250929-0004.jpg # Final internal layout
-└── oled-20250929-0005.mp4 # Final working system demo
+├── oled-20250929-0005.jpg # Final working system demo
+└── oled-20250929-0005.mp4 # Final working system demo - video
 
 raspi/
 ├── oled-screen.py # Main HDMI OLED rendering application
