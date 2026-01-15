@@ -53,12 +53,14 @@ raspi/
 | Step | Preview |
 |----|----|
 | OLED display | ![](media/oled-1424x280-1.jpg) |
-| Initial tests | media/oled-1424x280-2.mp4 |
+| Initial tests | ![](media/oled-1424x280-2.jpg) |
+| Initial tests video | ![](media/oled-1424x280-2.mp4) |
 | Raspberry Pi assembly | ![](media/oled-20250929-0001.jpg) |
 | Internal mounting | ![](media/oled-20250929-0002.jpg) |
 | Stand integration | ![](media/oled-20250929-0003.jpg) |
 | Final internals | ![](media/oled-20250929-0004.jpg) |
-| Final result | media/oled-20250929-0005.mp4 |
+| Final result | ![](media/oled-20250929-0005.jpg) |
+| Final result video | ![](media/oled-20250929-0005.mp4) |
 
 ---
 
